@@ -1,33 +1,23 @@
 package AIT.demo1;
 
-import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Component;
+import java.util.Map;
 
 @Component
-@Scope("prototype")
 public class Faculty {
-    String dean;
-    String name;
-    int capacityStudents;
+    private final ObjectProvider<Student> studentProvider;
+    private final Map<String, Course> courseMap;
 
-    public Faculty() {
-//        dean = "Dr. Munara";
-//        name = "AIT";
-//        capacityStudents = 120;
+    public Faculty(ObjectProvider<Student> studentProvider, Map<String, Course> courseMap) {
+        this.studentProvider = studentProvider;
+        this.courseMap = courseMap;
     }
 
-    public Faculty(String deanname, String fname, int cap){
-        dean = deanname;
-        name = fname;
-        capacityStudents=cap;
+    public Student createStudent(String name, double gpa, String courseKey) {
+        Student student = studentProvider.getObject(name, gpa);
+        Course selectedCourse = courseMap.get(courseKey);
+        student.setCourse(selectedCourse);
+        return student;
     }
-
-    @Override
-    public String toString() {
-        return "Faculty{" +
-                "dean='" + dean + '\'' +
-                ", name='" + name + '\'' +
-                ", capacityStudents='" + capacityStudents + '\'' +
-                '}';
-    }
-}
+} 
